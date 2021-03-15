@@ -1,0 +1,45 @@
+pragma solidity ^0.4.0;
+
+ contract Reputation{
+ uint public base;
+ uint public interval;
+ address public owner;
+
+
+ event isCalled(address _from, uint _time, uint _penalty, int reputation);
+
+ struct Misbehavior{
+ address subject; //subject who performed the misbehavior;
+  //another subject to see the cost of the contract
+ 
+ string misbehavior; //misbehavior
+ uint time; //time of the Misbehavior occured
+ uint penalty; //penalty (number of minitues blocked);
+ int rep; //honest subjects will have positive reputaton and vice versa
+
+ }
+
+ mapping (address => Misbehavior[]) public MisbehaviorList;
+
+ function Judge (uint _base, uint _interval) public{
+ base = _base;
+ interval = _interval;
+ owner = msg.sender;
+ }
+
+ function computeReputaton(address _subject,  string _misbehavior, uint _time) public { 
+ //misbehaviorJudge(msb);
+ 
+ reputation=1;
+ rep= reputaton;
+ 
+
+ isCalled(msg.sender,_time, penalty);
+ }
+
+
+
+
+
+ 
+ }
