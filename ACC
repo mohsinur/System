@@ -26,7 +26,7 @@ address public object;
 
  struct BehaviorItem{ //for one resource
  Misbehavior [] mbs; //misbehavior list of the subject on a particular resource
- uint TimeofUnblock; //time when the resource is unblocked (0 if unblocked; otherwise,blocked)
+ uint BlockUntil; //time when the resource is unblocked (0 if unblocked; otherwise,blocked)
  }
 
  struct PolicyItem{ //for one (resource, action) pair;
@@ -94,7 +94,7 @@ _threshold) public{
  policies[resource][action].NoRR = 0;
  policies[resource][action].isValued = true;
  policies[resource][action].result = false;
- behaviors[resource].TimeofUnblock = 0;
+ behaviors[resource].BlockUntil = 0;
  }
  }
  else throw;
@@ -191,13 +191,13 @@ policies[resource][action].timerange = _timerange;
  bytes32 resource = stringToBytes32(_resource);
  bytes32 action = stringToBytes32(_action);
 
- if(behaviors[resource].TimeofUnblock >= _time){//still blocked state
+ if(behaviors[resource].BlockUntil >= _time){//still blocked state
  errcode = 1; //"Requests are blocked!"
  }
 
  else{//unblocked state
- if(behaviors[resource].TimeofUnblock > 0){
- behaviors[resource].TimeofUnblock = 0;
+ if(behaviors[resource].BlockUntil > 0){
+ behaviors[resource].BlockUntil = 0;
  policies[resource][action].NoRR = 0;
  policies[resource][action].LRT = 0;
  }
@@ -209,7 +209,7 @@ policies[resource][action].timerange = _timerange;
  if(policies[resource][action].NoRR >= policies[resource][action].threshold){
  penalty = jc.misbehaviorJudge(subject, object, _resource, _action, "Too frequent access!", _time);
  behaviorcheck = false;
- behaviors[resource].TimeofUnblock = _time + penalty * 1 minutes;
+ behaviors[resource].BlockUntil = _time + penalty * 1 minutes;
  behaviors[resource].mbs.push(Misbehavior(_resource, _action, "Too frequent access!", _time, penalty));//problem occurs when using array
  }
  }
@@ -241,7 +241,7 @@ penalty);
  function getTimeofUnblock(string _resource) public constant returns(uint _penalty, uint
 _timeOfUnblock){
  bytes32 resource= stringToBytes32(_resource);
- _timeOfUnblock = behaviors[resource].TimeofUnblock;
+ _timeOfUnblock = behaviors[resource].BlockUntil;
  uint l = behaviors[resource].mbs.length;
  _penalty = behaviors[resource].mbs[l - 1].penalty;
  }
