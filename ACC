@@ -165,7 +165,7 @@ policies[resource][action].timerange = _timerange;
  else throw;
  }
 
-// A policy is uniquely identified by subject (action) and resource pair
+// A policy is uniquely identified by resource, action and resource pair
 
  function policyDelete(string _resource, string _action) public{
  bytes32 resource = stringToBytes32(_resource);
