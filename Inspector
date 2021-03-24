@@ -20,7 +20,7 @@ pragma solidity ^0.4.0;
 
  mapping (address => Misbehavior[]) public MisbehaviorList;
 
- function Inspect (uint _base, uint _interval) public{
+ function Inspector (uint _base, uint _interval) public{
  base = _base;
  interval = _interval;
  owner = msg.sender;
