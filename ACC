@@ -12,7 +12,7 @@ address public object;
  string _errmsg,
  bool _result,
  uint _time,
- uint _penalty
+ uint _punishment
  );
 
 // importan node consider the action as subject (20 bytes ethereum address and resource)
@@ -21,7 +21,7 @@ address public object;
  string action; //action (e.g., "read", "write", "execute") of the misbehavior
  string misbehavior; //misbehavior
  uint time; //time of the misbehavior occured
- uint penalty; //penalty opposed to the subject (number of minutes blocked)
+ uint punishment; //penalty opposed to the subject (number of minutes blocked)
  }
 
  struct BehaviorItem{ //for one resource
@@ -185,7 +185,7 @@ policies[resource][action].timerange = _timerange;
  bool policycheck = false;
  bool behaviorcheck = true;
  uint8 errcode = 0;
- uint penalty = 0;
+ uint punishment = 0;
 
  if (msg.sender == subject){
  bytes32 resource = stringToBytes32(_resource);
@@ -207,10 +207,10 @@ policies[resource][action].timerange = _timerange;
  if (_time - policies[resource][action].LRT <= policies[resource][action].minInterval){
  policies[resource][action].NoRR++;
  if(policies[resource][action].NoRR >= policies[resource][action].threshold){
- penalty = jc.misbehaviorJudge(subject, object, _resource, _action, "Too frequent access!", _time);
+ punishment = jc.misbehaviorJudge(subject, object, _resource, _action, "Too frequent access!", _time);
  behaviorcheck = false;
- behaviors[resource].BlockUntil = _time + penalty * 1 minutes;
- behaviors[resource].mbs.push(Misbehavior(_resource, _action, "Too frequent access!", _time, penalty));//problem occurs when using array
+ behaviors[resource].BlockUntil = _time + punishment * 1 minutes;
+ behaviors[resource].mbs.push(Misbehavior(_resource, _action, "Too frequent access!", _time, punishment));//problem occurs when using array
  }
  }
  else{
@@ -227,23 +227,23 @@ policies[resource][action].timerange = _timerange;
  }
  policies[resource][action].result = policycheck && behaviorcheck;
  policies[resource][action].err = errcode;
- if(0 == errcode) ReturnAccessResult(msg.sender, "Access authorized!", true, _time, penalty);
- if(1 == errcode) ReturnAccessResult(msg.sender, "Requests are blocked!", false, _time, penalty);
- if(2 == errcode) ReturnAccessResult(msg.sender, "Static Check failed!", false, _time, penalty);
- if(3 == errcode) ReturnAccessResult(msg.sender, "Misbehavior detected!", false, _time, penalty);
+ if(0 == errcode) ReturnAccessResult(msg.sender, "Access authorized!", true, _time, punishment);
+ if(1 == errcode) ReturnAccessResult(msg.sender, "Requests are blocked!", false, _time, punishment);
+ if(2 == errcode) ReturnAccessResult(msg.sender, "Static Check failed!", false, _time, punishment);
+ if(3 == errcode) ReturnAccessResult(msg.sender, "Misbehavior detected!", false, _time, punishment);
  if(4 == errcode) ReturnAccessResult(msg.sender, "Static check failed! & Misbehavior detected!",
-false, _time, penalty);
+false, _time, punishment);
  if(5 == errcode) ReturnAccessResult(msg.sender, "Wrong object or subject specified!", false, _time,
-penalty);
+punishment);
  }
 
 
- function getTimeofUnblock(string _resource) public constant returns(uint _penalty, uint
+ function getTimeofUnblock(string _resource) public constant returns(uint _punishment, uint
 _timeOfUnblock){
  bytes32 resource= stringToBytes32(_resource);
  _timeOfUnblock = behaviors[resource].BlockUntil;
  uint l = behaviors[resource].mbs.length;
- _penalty = behaviors[resource].mbs[l - 1].penalty;
+ _punishment = behaviors[resource].mbs[l - 1].punishment;
  }
 
 
