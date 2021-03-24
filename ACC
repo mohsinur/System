@@ -155,6 +155,15 @@ policies[resource][action].timerange = _timerange;
  }
  else throw;
  }
+ 
+ function timerangeUpdate(string _resource, string _action, string _timerange) public{
+ bytes32 resource = stringToBytes32(_resource);
+ bytes32 action = stringToBytes32(_action);
+ if(policies[resource][action].isValued){
+ policies[resource][action].timerange = _timerange;
+ }
+ else throw;
+ }
 
 // A policy is uniquely identified by subject (action) and resource pair
 
