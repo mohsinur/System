@@ -5,7 +5,7 @@ pragma solidity ^0.4.0;
  address public owner;
  address public subject;
 address public object;
- Judge public jc;
+Inspector public jc;
 
  event ReturnAccessResult(
  address indexed _from,
@@ -69,7 +69,7 @@ address public object;
  }
  function setJC(address _jc)public{
  if(owner == msg.sender){
- jc = Judge(_jc);
+ jc = Inspector(_jc);
  }
  else throw;
 
