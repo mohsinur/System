@@ -34,8 +34,8 @@ address public object;
  string permission; //permission: "allow" or "deny"
  uint minInterval; //minimum allowable interval (in seconds) between two successive requests
  uint ToLR; //Time of Last Request
- uint NoFR; //Number of frequent Requests in a short period of time
- uint threshold; //threshold on NoFR, above which a misbehavior is suspected
+ uint NoRR; //Number of frequent Requests in a short period of time
+ uint threshold; //threshold on NoRR, above which a misbehavior is suspected
  string location;
  string timerange;
  string action;
@@ -91,7 +91,7 @@ _threshold) public{
   policies[resource][action].location = _location;
    policies[resource][action].timerange = _timerange;
  policies[resource][action].ToLR = 0;
- policies[resource][action].NoFR = 0;
+ policies[resource][action].NoRR = 0;
  policies[resource][action].isValued = true;
  policies[resource][action].result = false;
  behaviors[resource].TimeofUnblock = 0;
@@ -101,14 +101,14 @@ _threshold) public{
  }
 
  function getPolicy(string _resource, string _action) public constant returns (string _permission, uint
-_minInterval, uint _threshold, uint _ToLR, uint _NoFR, bool _res, uint8 _errcode){
+_minInterval, uint _threshold, uint _ToLR, uint _NoRR, bool _res, uint8 _errcode){
  bytes32 resource = stringToBytes32(_resource);
  bytes32 action = stringToBytes32(_action);
  if(policies[resource][action].isValued){
  _permission = policies[resource][action].permission;
  _minInterval = policies[resource][action].minInterval;
  _threshold = policies[resource][action].threshold;
- _NoFR = policies[resource][action].NoFR;
+ _NoRR = policies[resource][action].NoRR;
  _ToLR = policies[resource][action].ToLR;
  _res = policies[resource][action].result;
  _errcode = policies[resource][action].err;
@@ -198,15 +198,15 @@ policies[resource][action].timerange = _timerange;
  else{//unblocked state
  if(behaviors[resource].TimeofUnblock > 0){
  behaviors[resource].TimeofUnblock = 0;
- policies[resource][action].NoFR = 0;
+ policies[resource][action].NoRR = 0;
  policies[resource][action].ToLR = 0;
  }
  //policy check
 
  //behavior check
  if (_time - policies[resource][action].ToLR <= policies[resource][action].minInterval){
- policies[resource][action].NoFR++;
- if(policies[resource][action].NoFR >= policies[resource][action].threshold){
+ policies[resource][action].NoRR++;
+ if(policies[resource][action].NoRR >= policies[resource][action].threshold){
  penalty = jc.misbehaviorJudge(subject, object, _resource, _action, "Too frequent access!", _time);
  behaviorcheck = false;
  behaviors[resource].TimeofUnblock = _time + penalty * 1 minutes;
@@ -214,7 +214,7 @@ policies[resource][action].timerange = _timerange;
  }
  }
  else{
- policies[resource][action].NoFR = 0;
+ policies[resource][action].NoRR = 0;
  }
  if(!policycheck && behaviorcheck) errcode = 2; //"Static Check failed!"
  if(policycheck && !behaviorcheck) errcode = 3; //"Misbehavior detected!"
