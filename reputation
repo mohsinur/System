@@ -15,7 +15,7 @@ pragma solidity ^0.4.0;
  string misbehavior; //misbehavior
  uint time; //time of the Misbehavior occured
  uint penalty; //penalty (number of minitues blocked);
- int rep; //honest subjects will have positive reputaton and vice versa
+ int rep; //honest subjects will have positive reputation and vice versa
 
  }
 
