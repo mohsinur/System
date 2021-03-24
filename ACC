@@ -207,7 +207,7 @@ policies[resource][action].timerange = _timerange;
  if (_time - policies[resource][action].LRT <= policies[resource][action].minInterval){
  policies[resource][action].NoRR++;
  if(policies[resource][action].NoRR >= policies[resource][action].threshold){
- punishment = jc.misbehaviorJudge(subject, object, _resource, _action, "Too frequent access!", _time);
+ punishment = jc.inspectBehavior(subject, object, _resource, _action, "Too frequent access!", _time);
  behaviorcheck = false;
  behaviors[resource].BlockUntil = _time + punishment * 1 minutes;
  behaviors[resource].mbs.push(Misbehavior(_resource, _action, "Too frequent access!", _time, punishment));//problem occurs when using array
