@@ -30,7 +30,13 @@ pragma solidity ^0.4.0;
  function computeReputaton(address _subject,  string _misbehavior, uint _time) public { 
  //misbehaviorJudge(msb);
  
+// if the subject is misbehaving
  reputation=1;
+ 
+// else 
+
+reputation =-1;
+
  rep= reputaton;
  
 
