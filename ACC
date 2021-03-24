@@ -6,6 +6,7 @@ pragma solidity ^0.4.0;
  address public subject;
 address public object;
 Inspector public jc;
+Reputation public rc;
 
  event ReturnAccessResult(
  address indexed _from,
@@ -165,7 +166,6 @@ policies[resource][action].timerange = _timerange;
  else throw;
  }
 
-// A policy is uniquely identified by resource, action and resource pair
 
  function policyDelete(string _resource, string _action) public{
  bytes32 resource = stringToBytes32(_resource);
@@ -203,11 +203,16 @@ policies[resource][action].timerange = _timerange;
  }
  //policy check
 
- //behavior check
+// behavior check for location
+
+//behavior check for timerange
+
+ //behavior check for frequent access requests
  if (_time - policies[resource][action].LRT <= policies[resource][action].minInterval){
  policies[resource][action].NoRR++;
  if(policies[resource][action].NoRR >= policies[resource][action].threshold){
  punishment = jc.inspectBehavior(subject, object, _resource, _action, "Too frequent access!", _time);
+ reputation = rc.computeReputation(subject, object, _resource, _action, "Too frequent access!", _time);
  behaviorcheck = false;
  behaviors[resource].BlockUntil = _time + punishment * 1 minutes;
  behaviors[resource].mbs.push(Misbehavior(_resource, _action, "Too frequent access!", _time, punishment));//problem occurs when using array
