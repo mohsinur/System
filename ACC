@@ -239,9 +239,9 @@ punishment);
 
 
  function getTimeofUnblock(string _resource) public constant returns(uint _punishment, uint
-_timeOfUnblock){
+_BlockUntil){
  bytes32 resource= stringToBytes32(_resource);
- _timeOfUnblock = behaviors[resource].BlockUntil;
+ _BlockUntil = behaviors[resource].BlockUntil;
  uint l = behaviors[resource].mbs.length;
  _punishment = behaviors[resource].mbs[l - 1].punishment;
  }
